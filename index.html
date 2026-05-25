@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>Vest Promts • Фиолетовые промты для нейросетей</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at 20% 10%, #2d1b4e 0%, #1a1035 60%, #0f0a20 100%);
+      min-height: 100vh;
+      color: #f0e6ff;
+      padding: 1.8rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Фиолетовые глубокие переливы */
+    body::before {
+      content: "";
+      position: fixed;
+      top: -10%;
+      left: -5%;
+      width: 70%;
+      height: 70%;
+      background: radial-gradient(circle at 30% 30%, rgba(150, 80, 255, 0.3), transparent 65%);
+      filter: blur(80px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: -10%;
+      right: -5%;
+      width: 75%;
+      height: 75%;
+      background: radial-gradient(circle at 80% 70%, rgba(120, 50, 220, 0.35), transparent 65%);
+      filter: blur(85px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 2.2rem;
+      min-height: 90vh;
+    }
+
+    /* Заголовок */
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.8rem;
+      animation: fadeSlideDown 0.8s ease-out;
+    }
+
+    .logo {
+      font-size: clamp(3rem, 10vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      background: linear-gradient(180deg, #e4d4ff 0%, #9b6eff 60%, #6d28d9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 8px 14px #5b21b6);
+      margin-bottom: 0.1rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #d4c0ff;
+      background: rgba(60, 20, 100, 0.5);
+      backdrop-filter: blur(14px);
+      padding: 0.5rem 1.8rem;
+      border-radius: 40px;
+      border: 1px solid rgba(150, 100, 240, 0.5);
+      letter-spacing: 0.3px;
+      max-width: 90%;
+    }
+
+    /* Поиск */
+    .search-wrapper {
+      position: relative;
+      animation: fadeSlideDown 0.9s ease-out;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1.3rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #a78bfa;
+      font-size: 1.2rem;
+      pointer-events: none;
+    }
+
+    #searchInput {
+      width: 100%;
+      padding: 1rem 1.2rem 1rem 3.2rem;
+      background: rgba(30, 15, 55, 0.7);
+      backdrop-filter: blur(22px);
+      border: 1.5px solid rgba(130, 80, 240, 0.5);
+      border-radius: 60px;
+      font-size: 1rem;
+      color: #ffffff;
+      outline: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 12px 28px -12px rgba(100, 50, 200, 0.5);
+      font-weight: 400;
+    }
+
+    #searchInput::placeholder {
+      color: #9f8bc4;
+    }
+
+    #searchInput:focus {
+      border-color: #a78bfa;
+      box-shadow: 0 14px 34px -8px #5b21b6;
+      background: rgba(40, 20, 75, 0.8);
+    }
+
+    /* Сетка кнопок-триггеров */
+    .prompts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .prompt-trigger {
+      background: rgba(40, 20, 70, 0.55);
+      backdrop-filter: blur(20px);
+      border: 1.5px solid rgba(140, 80, 240, 0.35);
+      border-radius: 2rem;
+      padding: 1.5rem 1.3rem;
+      transition: all 0.35s ease;
+      box-shadow: 0 15px 28px -12px rgba(60, 20, 100, 0.7);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      animation: fadeInUp 0.7s ease backwards;
+      color: #f0e6ff;
+    }
+
+    .prompt-trigger:hover {
+      border-color: #b794f4;
+      box-shadow: 0 22px 36px -14px #4c1d95;
+      background: rgba(50, 25, 90, 0.7);
+      transform: translateY(-3px);
+    }
+
+    .trigger-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .trigger-icon {
+      font-size: 2rem;
+      background: linear-gradient(145deg, #6d28d9, #4c1d95);
+      width: 3rem;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 1rem;
+      box-shadow: 0 6px 14px rgba(120, 50, 220, 0.5);
+    }
+
+    .trigger-title {
+      font-weight: 650;
+      font-size: 1.25rem;
+      letter-spacing: -0.2px;
+    }
+
+    .trigger-badge {
+      align-self: flex-start;
+      background: linear-gradient(135deg, #7c3aed, #5b21b6);
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      box-shadow: 0 3px 10px #4c1d95;
+    }
+
+    .expand-hint {
+      font-size: 0.9rem;
+      color: #c4b5fd;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    /* Модальное окно с промтом */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(20, 5, 40, 0.85);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      animation: fadeIn 0.25s ease;
+      padding: 1rem;
+    }
+
+    .modal {
+      background: #2d1b4e;
+      border: 1.5px solid #8b5cf6;
+      border-radius: 2.2rem;
+      max-width: 650px;
+      width: 100%;
+      padding: 2rem 1.8rem;
+      box-shadow: 0 35px 55px #1a0a30;
+      backdrop-filter: blur(25px);
+      background: rgba(40, 20, 70, 0.95);
+      animation: scaleIn 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #e9d5ff;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #c4b5fd;
+      font-size: 2rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: 0.2s;
+    }
+
+    .close-btn:hover {
+      color: white;
+    }
+
+    .modal-content {
+      background: #1e1038;
+      border-radius: 1.3rem;
+      padding: 1.2rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #e2d9ff;
+      border-left: 4px solid #7c3aed;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 370px;
+      overflow-y: auto;
+    }
+
+    .modal-copy {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .copy-modal-btn {
+      background: linear-gradient(145deg, #7c3aed, #5b21b6);
+      border: none;
+      color: white;
+      padding: 0.7rem 1.5rem;
+      border-radius: 2.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .copy-modal-btn:hover {
+      background: #8b5cf6;
+      box-shadow: 0 0 18px #6d28d9;
+    }
+
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem;
+      color: #c4b5fd;
+    }
+
+    /* Футер */
+    .footer {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 0.5rem;
+      border-top: 1px solid rgba(140, 80, 240, 0.3);
+      animation: fadeInUp 0.8s ease;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-brand {
+      font-weight: 700;
+      font-size: 1.2rem;
+      background: linear-gradient(to right, #c4b5fd, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-link {
+      color: #a78bfa;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.2s;
+      cursor: pointer;
+      background: rgba(255,255,255,0.05);
+      padding: 0.5rem 1.2rem;
+      border-radius: 30px;
+      border: 1px solid rgba(150, 100, 240, 0.4);
+    }
+
+    .footer-link:hover {
+      background: rgba(120, 60, 220, 0.3);
+      color: white;
+      border-color: #b794f4;
+    }
+
+    @keyframes fadeSlideDown {
+      0% { opacity: 0; transform: translateY(-25px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+
+    @keyframes scaleIn {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      .modal {
+        padding: 1.5rem;
+      }
+      .footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 class="logo">Vest Promts</h1>
+      <p class="subtitle">✨ фиолетовая библиотека промтов-дополнений для нейросетей</p>
+    </header>
+
+    <div class="search-wrapper">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Поиск по названию промта..." autocomplete="off">
+    </div>
+
+    <div class="prompts-grid" id="promptsGrid"></div>
+
+    <footer class="footer">
+      <span class="footer-brand">Vest Promts 2026</span>
+      <div class="footer-links">
+        <span class="footer-link" onclick="alert('📬 Свяжитесь с нами через Telegram')">Поддержка</span>
+        <span class="footer-link" onclick="alert('📖 Документация появится позже')">Документы</span>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function() {
+      // 5 базовых + 1 премиум + 2 телеграм-бота + 10 дополнительных = 18 промтов
+      const promptsData = [
+        { title: "🤖 Умный Telegram бот", icon: "🤖", content: "Дополнение к запросу:\nСоздай Telegram бота с использованием исключительно премиум эмодзи в сообщениях и инлайн-кнопках. Используй parse_mode='HTML' и теги <tg-emoji emoji-id=\"...\">. Пример кнопки: InlineKeyboardButton(text=\"Профиль\", icon_custom_emoji_id=\"5870994129244131212\"). Не применять обычные эмодзи.", tag: "бот" },
+        { title: "📊 Дашборд статистики", icon: "📊", content: "Дополнение к запросу:\nОформи сообщение со статистикой бота, применяя премиум эмодзи: график роста (5870930636742595124), статистика (5870921681735781843), деньги (5904462880941545555). Все иконки только через tg-emoji. Добавь кнопку «Обновить» с icon_custom_emoji_id=\"5345906554510012647\".", tag: "аналитика" },
+        { title: "🔐 Доступ и подписка", icon: "🔐", content: "Дополнение к запросу:\nРеализуй проверку подписки с замком: закрытый id=6037249452824072506, открытый id=6037496202990194718. Кнопка «Подписаться» с иконкой ссылки (5769289093221454192). Используй только премиум эмодзи, обычные не вставлять.", tag: "безопасность" },
+        { title: "📅 Напоминания и дедлайны", icon: "📅", content: "Дополнение к запросу:\nСоздай систему напоминаний с календарём (5890937706803894250) и часами (5983150113483134607). Все сообщения через HTML и tg-emoji. Кнопка «Отложить» с иконкой времени (5775896410780079073).", tag: "органайзер" },
+        { title: "🎁 Промо-рассылка", icon: "🎁", content: "Дополнение к запросу:\nСделай шаблон рассылки с подарком (6032644646587338669) и рупором (6039422865189638057). Кнопка «Получить» с иконкой скачать (6039802767931871481). Только премиум эмодзи, parse_mode HTML.", tag: "маркетинг" },
+        { title: "⭐ Премиум эмодзи (шпаргалка)", icon: "✨", content: "Дополнение к запросу:\nИспользуй следующие премиум эмодзи в боте:\n⚙ Настройки 5870982283724328568\n👤 Профиль 5870994129244131212\n👥 Люди 5870772616305839506\n✅ Галочка 5870633910337015697\n❌ Крестик 5870657884844462243\n📁 Файл 5870528606328852614\n🔒 Замок закрытый 6037249452824072506\n🔓 Замок открытый 6037496202990194718\n📣 Рупор 6039422865189638057\n🗑 Мусорный бак 5870875489362513438\n🔗 Ссылка 5769289093221454192\nℹ Инфо 6028435952299413210\n🤖 Бот 6030400221232501136\n👁 Глаз 6037397706505195857\n🎁 Подарок 6032644646587338669\n⏰ Часы 5983150113483134607\n🎉 Ура 6041731551845159060\n📅 Календарь 5890937706803894250\n🪙 Деньги 5904462880941545555\n🔨 Код </> 5940433880585605708\n🔄 Загрузка 5345906554510012647\n◁ Назад (для кнопки назад)\n\nПример инлайн-кнопки:\nicon_custom_emoji_id=\"6039450962865688331\"", tag: "премиум" },
+        { title: "📨 Telegram-бот рассылки", icon: "📨", content: "Дополнение к запросу:\nНапиши код на Python для Telegram бота, который делает массовую рассылку сообщений всем пользователям. Используй aiogram 3, FSM для состояний, клавиатуру с кнопкой «Отмена». Администратор отправляет сообщение, бот пересылает его всем ID из базы.", tag: "телеграм" },
+        { title: "🔔 Telegram бот уведомлений", icon: "🔔", content: "Дополнение к запросу:\nРазработай систему уведомлений для Telegram бота с отложенными задачами. Используй aioschedule или asyncio. Бот должен напоминать пользователю о событии через заданное время. Хранилище — SQLite.", tag: "телеграм" },
+        { title: "🎨 Генератор изображений", icon: "🎨", content: "Дополнение к запросу:\nСоздай промт для Midjourney в стиле киберпанк с фиолетовыми неоновыми оттенками. Главный объект — парящий город будущего, отражения в воде, дымка.", tag: "арт" },
+        { title: "📝 SEO-статья", icon: "📝", content: "Дополнение к запросу:\nНапиши статью на 2000 знаков о преимуществах использования нейросетей в маркетинге. Ключевые слова: AI, автоматизация, контент. Добавь подзаголовки и списки.", tag: "текст" },
+        { title: "💻 Код-ревью", icon: "💻", content: "Дополнение к запросу:\nПроведи код-ревью следующего Python скрипта. Найди потенциальные ошибки, предложи улучшения производительности и читаемости. Оформи ответ в виде списка с пояснениями.", tag: "код" },
+        { title: "🎵 Плейлист под настроение", icon: "🎵", content: "Дополнение к запросу:\nСоставь плейлист из 10 треков в стиле lo-fi hip hop для концентрации. Дай краткое описание каждого трека и почему он подходит для работы.", tag: "музыка" },
+        { title: "📱 UI/UX дизайн", icon: "📱", content: "Дополнение к запросу:\nОпиши структуру мобильного приложения для заметок с темной темой и фиолетовыми акцентами. Укажи расположение элементов, анимации переходов и стили.", tag: "дизайн" },
+        { title: "🍳 Рецепт ужина", icon: "🍳", content: "Дополнение к запросу:\nПредложи рецепт итальянской пасты с морепродуктами на 4 персоны. Список ингредиентов с граммовками, пошаговое приготовление.", tag: "еда" },
+        { title: "🧠 Обучение Python", icon: "🧠", content: "Дополнение к запросу:\nСоставь план обучения Python с нуля до Middle-разработчика на 6 месяцев. Разбей по неделям, укажи темы, ресурсы и проекты.", tag: "образование" },
+        { title: "📈 Финансовый анализ", icon: "📈", content: "Дополнение к запросу:\nОбъясни, как рассчитать ROI для инвестиционного портфеля. Приведи формулу и пример на цифрах. Добавь сравнение с инфляцией.", tag: "финансы" },
+        { title: "🌐 Парсинг сайтов", icon: "🌐", content: "Дополнение к запросу:\nНапиши скрипт на Python с BeautifulSoup для сбора заголовков новостей с главной страницы Хабра. Сохрани результат в CSV.", tag: "код" },
+        { title: "🎮 Игровой бот", icon: "🎮", content: "Дополнение к запросу:\nОпиши логику Telegram бота для игры «Угадай число». Пользователь загадывает, бот отгадывает за минимальное число шагов. Используй инлайн-кнопки «Больше»/«Меньше».", tag: "игра" }
+      ];
+
+      const container = document.getElementById('promptsGrid');
+      const searchInput = document.getElementById('searchInput');
+
+      function escapeHtml(text) {
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+        return String(text).replace(/[&<>"']/g, m => map[m]);
+      }
+
+      function openModal(prompt) {
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+        overlay.innerHTML = `
+          <div class="modal">
+            <div class="modal-header">
+              <span class="modal-title">${escapeHtml(prompt.icon)} ${escapeHtml(prompt.title)}</span>
+              <button class="close-btn">✕</button>
+            </div>
+            <div class="modal-content">${escapeHtml(prompt.content).replace(/\n/g, '<br>')}</div>
+            <div class="modal-copy">
+              <button class="copy-modal-btn">📋 Копировать промт</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+
+        const closeBtn = overlay.querySelector('.close-btn');
+        const copyBtn = overlay.querySelector('.copy-modal-btn');
+
+        closeBtn.addEventListener('click', () => overlay.remove());
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+
+        copyBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText(prompt.content).then(() => {
+            copyBtn.textContent = '✅ Скопировано';
+            setTimeout(() => { copyBtn.innerHTML = '📋 Копировать промт'; }, 1500);
+          });
+        });
+      }
+
+      function renderCards(filterText = '') {
+        const lowerFilter = filterText.toLowerCase().trim();
+        const filtered = promptsData.filter(p => p.title.toLowerCase().includes(lowerFilter) || p.tag.toLowerCase().includes(lowerFilter));
+
+        if (filtered.length === 0) {
+          container.innerHTML = '<div class="no-results">🔮 Ничего не найдено</div>';
+          return;
+        }
+
+        container.innerHTML = filtered.map((p, i) => `
+          <div class="prompt-trigger" style="animation-delay:${i*0.05}s" data-index="${promptsData.indexOf(p)}">
+            <div class="trigger-header">
+              <div class="trigger-icon">${escapeHtml(p.icon)}</div>
+              <div class="trigger-title">${escapeHtml(p.title)}</div>
+            </div>
+            <span class="trigger-badge">${escapeHtml(p.tag)}</span>
+            <span class="expand-hint">▶ Нажмите, чтобы раскрыть промт</span>
+          </div>
+        `).join('');
+
+        document.querySelectorAll('.prompt-trigger').forEach(card => {
+          card.addEventListener('click', () => {
+            const index = card.dataset.index;
+            openModal(promptsData[index]);
+          });
+        });
+      }
+
+      searchInput.addEventListener('input', () => renderCards(searchInput.value));
+      renderCards();
+    })();
+  </script>
+</body>
+</html>
